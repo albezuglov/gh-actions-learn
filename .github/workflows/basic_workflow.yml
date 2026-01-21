@@ -25,7 +25,6 @@ jobs:
   build:
     needs: lint
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - name: Run a build
         run: |
@@ -60,7 +59,11 @@ jobs:
           echo It is a build2, world!
           echo Lintstatus=${{ needs.lint.result }}=
           echo Allstatus=${{ join(needs.*.result) }}=
-          gh api /repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/jobs | jq '.jobs[]| select (.conclusion == "failure") | .name, .head_branch, (.steps[]|select(.conclusion == "failure")|.name)'
+          is_failed=${{ contains(needs.*.result, 'failure') }}
+          echo is_failed=$is_failed=
+          is_canceled=${{ contains(needs.*.result, 'cancelled') }}
+          echo is_canceled=$is_canceled=
+        # gh api /repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/jobs | jq '.jobs[]| select (.conclusion == "failure") | .name, .head_branch, (.steps[]|select(.conclusion == "failure")|.name)'
 
 
       # - name: Slack Notification on failure or success
