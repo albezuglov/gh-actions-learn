@@ -33,12 +33,13 @@ jobs:
       - name: Run a multi-line script
         run: |
           echo Add other actions to build,
+          sleep infinity
           exit 1
           echo test, and deploy your project.
 
       - name: Slack Notification on failure or success
         uses: rtCamp/action-slack-notify@v2
-        if: failure() || success() # Customize when this runs
+        if: always() # Customize when this runs
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           # Optional variables for customization:
