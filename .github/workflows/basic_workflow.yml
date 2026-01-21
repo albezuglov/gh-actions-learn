@@ -29,9 +29,9 @@ jobs:
       - name: Run a build
         run: |
           echo It is a build, world!
+          exit 1
 
   build2:
-    needs: lint
     runs-on: ubuntu-latest
     steps:
       - name: Run a build2
