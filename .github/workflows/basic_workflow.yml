@@ -18,9 +18,9 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - name: Run a build
+      - name: Run a linter
         run: |
-          echo It is a build, world!
+          echo It is a linter, world!
           
   build:
     needs: lint
@@ -45,7 +45,7 @@ jobs:
     steps:
       - name: Run a deploy
         run: |
-          echo It is a build2, world!
+          echo It is a deploy, world!
 
   final:
     if: always()
@@ -53,6 +53,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run a deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo It is a build2, world!
           echo Lintstatus=${{ needs.lint.result }}=
