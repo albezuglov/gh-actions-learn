@@ -45,5 +45,6 @@ jobs:
           SLACK_CHANNEL: '#githun_alerts'
           SLACK_USERNAME: 'CI Bot'
           SLACK_COLOR: ${{ job.status }}
-          SLACK_FOOTER: ""
-          SLACK_MESSAGE: 'Workflow status: ${{ job.status }}' # Custom message
+          SLACK_TITLE: '${{ github.workflow }} ${{ job.status }}'
+          SLACK_MESSAGE: 'Workflow status: ${{ job.status }}'
+          SLACK_FOOTER: ''
