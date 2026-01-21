@@ -29,10 +29,10 @@ jobs:
       - name: Run a build
         run: |
           echo It is a build, world!
-          exit 1
-
+          
   build2:
     runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
     steps:
       - name: Run a build2
         run: |
