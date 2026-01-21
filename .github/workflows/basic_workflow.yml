@@ -61,7 +61,7 @@ jobs:
           if [[ "${{ contains(needs.*.result, 'failure') }}" == "true" ]]; then
             echo status=failure
             "status=failure" >> $GITHUB_ENV
-          if [[ "${{ contains(needs.*.result, 'cancelled') }}" == "true" ]]; then
+          elif [[ "${{ contains(needs.*.result, 'cancelled') }}" == "true" ]]; then
             echo status=cancelled
             "status=cancelled" >> $GITHUB_ENV
           else
