@@ -15,35 +15,56 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  lint:
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Run a build
         run: |
-          echo Add other actions to build,
-          exit 1
-          echo test, and deploy your project.
+          echo It is a build, world!
+          
+  build:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run a build
+        run: |
+          echo It is a build, world!
 
-      - name: Slack Notification on failure or success
-        uses: rtCamp/action-slack-notify@v2
-        if: always() # Customize when this runs
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          # Optional variables for customization:
-          SLACK_CHANNEL: '#githun_alerts'
-          SLACK_USERNAME: 'CI Bot'
-          SLACK_COLOR: ${{ job.status }}
-          SLACK_MESSAGE: '${{ github.workflow }} ${{ job.status }}'
-          SLACK_FOOTER: ''
+  build2:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run a build2
+        run: |
+          echo It is a build2, world!
+
+  deploy:
+    needs: [build, build2]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run a deploy
+        run: |
+          echo It is a build2, world!
+
+  final:
+    if: always()
+    needs: [lint, build, build2, deploy]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run a deploy
+        run: |
+          echo It is a build2, world!
+          echo Lintstatus=${{ needs.lint.result }}=
+          echo Allstatus=${{ join(needs.*.result) }}=
+
+      # - name: Slack Notification on failure or success
+      #   uses: rtCamp/action-slack-notify@v2
+      #   if: always() # Customize when this runs
+      #   env:
+      #     SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      #     # Optional variables for customization:
+      #     SLACK_CHANNEL: '#githun_alerts'
+      #     SLACK_USERNAME: 'CI Bot'
+      #     SLACK_COLOR: ${{ job.status }}
+      #     SLACK_MESSAGE: '${{ github.workflow }} ${{ job.status }}'
+      #     SLACK_FOOTER: ''
