@@ -33,7 +33,6 @@ jobs:
       - name: Run a multi-line script
         run: |
           echo Add other actions to build,
-          sleep infinity
           exit 1
           echo test, and deploy your project.
 
@@ -46,6 +45,5 @@ jobs:
           SLACK_CHANNEL: '#githun_alerts'
           SLACK_USERNAME: 'CI Bot'
           SLACK_COLOR: ${{ job.status }}
-          SLACK_TITLE: '${{ github.workflow }} ${{ job.status }}'
-          SLACK_MESSAGE: 'Workflow status: ${{ job.status }}'
+          SLACK_MESSAGE: '{{ github.workflow }} ${{ job.status }}'
           SLACK_FOOTER: ''
