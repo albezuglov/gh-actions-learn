@@ -29,7 +29,7 @@ jobs:
       - name: Run a build
         run: |
           echo It is a build, world!
-          sleep infinity
+          exit 1
           
   build2:
     runs-on: ubuntu-latest
@@ -57,6 +57,8 @@ jobs:
           echo It is a build2, world!
           echo Lintstatus=${{ needs.lint.result }}=
           echo Allstatus=${{ join(needs.*.result) }}=
+          gh api /repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/jobs | jq '.jobs[]| select (.conclusion == "failure") | .name, .head_branch, (.steps[]|select(.conclusion == "failure")|.name)'
+
 
       # - name: Slack Notification on failure or success
       #   uses: rtCamp/action-slack-notify@v2
