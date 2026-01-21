@@ -34,3 +34,13 @@ jobs:
         run: |
           echo Add other actions to build,
           echo test, and deploy your project.
+
+      - name: Slack Notification on failure or success
+        uses: rtCamp/action-slack-notify@v2
+        if: failure() || success() # Customize when this runs
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          # Optional variables for customization:
+          SLACK_CHANNEL: '#githun_alerts'
+          SLACK_USERNAME: 'CI Bot'
+          SLACK_MESSAGE: 'Workflow status: ${{ job.status }}' # Custom message
