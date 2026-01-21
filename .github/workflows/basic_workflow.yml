@@ -53,20 +53,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check status
-        id: workflow_status
+        # id: check_status
         # env:
         #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo It is a check status, world!
           if [[ "${{ contains(needs.*.result, 'failure') }}" == "true" ]]; then
-            echo status=failure
-            echo "status=failure" >> $GITHUB_ENV
+            echo workflow_status=failure
+            echo "workflow_status=failure" >> $GITHUB_ENV
           elif [[ "${{ contains(needs.*.result, 'cancelled') }}" == "true" ]]; then
-            echo status=cancelled
-            echo "status=cancelled" >> $GITHUB_ENV
+            echo workflow_status=cancelled
+            echo "workflow_status=cancelled" >> $GITHUB_ENV
           else
-            echo status=success
-            echo "status=success" >> $GITHUB_ENV
+            echo workflow_status=success
+            echo "workflow_status=success" >> $GITHUB_ENV
           fi          
         # echo Lintstatus=${{ needs.lint.result }}=
         # echo Allstatus=${{ join(needs.*.result) }}=
@@ -78,6 +78,6 @@ jobs:
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_USERNAME: 'CI Bot'
-          SLACK_COLOR: ${{ steps.workflow_status.outputs.status }}
-          SLACK_MESSAGE: '${{ github.workflow }} ${{ steps.workflow_status.outputs.status }}'
+          SLACK_COLOR: ${{ env.workflow_status }}
+          SLACK_MESSAGE: '${{ github.workflow }} ${{ env.workflow_status }}'
           SLACK_FOOTER: ''
