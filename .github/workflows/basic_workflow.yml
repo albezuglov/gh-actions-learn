@@ -33,6 +33,7 @@ jobs:
       - name: Run a multi-line script
         run: |
           echo Add other actions to build,
+          exit 1
           echo test, and deploy your project.
 
       - name: Slack Notification on failure or success
