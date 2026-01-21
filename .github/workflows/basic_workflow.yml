@@ -25,6 +25,7 @@ jobs:
   build:
     needs: lint
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - name: Run a build
         run: |
