@@ -29,7 +29,6 @@ jobs:
       - name: Run a build
         run: |
           echo It is a build, world!
-          sleep infinity
           exit 1
           
   build2:
@@ -53,28 +52,32 @@ jobs:
     needs: [lint, build, build2, deploy]
     runs-on: ubuntu-latest
     steps:
-      - name: Run a deploy
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check status
+        id: workflow_status
+        # env:
+        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo It is a build2, world!
-          echo Lintstatus=${{ needs.lint.result }}=
-          echo Allstatus=${{ join(needs.*.result) }}=
-          is_failed=${{ contains(needs.*.result, 'failure') }}
-          echo is_failed=$is_failed=
-          is_canceled=${{ contains(needs.*.result, 'cancelled') }}
-          echo is_canceled=$is_canceled=
+          echo It is a check status, world!
+          if [[ "${{ contains(needs.*.result, 'failure') }}" == "true" ]]; then
+            echo status=failure
+            "status=failure" >> $GITHUB_ENV
+          if [[ "${{ contains(needs.*.result, 'cancelled') }}" == "true" ]]; then
+            echo status=cancelled
+            "status=cancelled" >> $GITHUB_ENV
+          else
+            echo status=success
+            "status=success" >> $GITHUB_ENV
+          fi          
+        # echo Lintstatus=${{ needs.lint.result }}=
+        # echo Allstatus=${{ join(needs.*.result) }}=
+        # echo is_failed=$is_failed=
+        # echo is_canceled=$is_canceled=
         # gh api /repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/jobs | jq '.jobs[]| select (.conclusion == "failure") | .name, .head_branch, (.steps[]|select(.conclusion == "failure")|.name)'
-
-
-      # - name: Slack Notification on failure or success
-      #   uses: rtCamp/action-slack-notify@v2
-      #   if: always() # Customize when this runs
-      #   env:
-      #     SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-      #     # Optional variables for customization:
-      #     SLACK_CHANNEL: '#githun_alerts'
-      #     SLACK_USERNAME: 'CI Bot'
-      #     SLACK_COLOR: ${{ job.status }}
-      #     SLACK_MESSAGE: '${{ github.workflow }} ${{ job.status }}'
-      #     SLACK_FOOTER: ''
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_USERNAME: 'CI Bot'
+          SLACK_COLOR: ${{ steps.workflow_status.outputs.status }}
+          SLACK_MESSAGE: '${{ github.workflow }} ${{ steps.workflow_status.outputs.status }}'
+          SLACK_FOOTER: ''
