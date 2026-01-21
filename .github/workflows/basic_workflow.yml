@@ -29,6 +29,7 @@ jobs:
       - name: Run a build
         run: |
           echo It is a build, world!
+          sleep infinity
           exit 1
           
   build2:
